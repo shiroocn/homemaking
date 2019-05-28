@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="__PLUGINS__/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__STATIC__/css/index.css">
+
+    <title>预约服务</title>
+</head>
+<body class="order">
+<div class="add" id="app">
+    <form class="add-form" id="add-form" method="post" :action="formUrl">
+        <div class="form-group">
+            <label for="phone">手机号码</label>
+            <input type="number" class="form-control" id="phone" name="phone" placeholder="">
+        </div>
+        <div class="form-group">
+            <label for="task_id">选择服务</label>
+            <select id="task_id" name="task_id" class="form-control" v-model="taskID">
+                <option value="0" selected>请选择...</option>
+                {volist name="tasks" id="task"}
+                    <option value="{$task.task_id}">{$task.task_name}</option>
+                {/volist}
+            </select>
+        </div>
+        <div class="">
+            <label for="province_id">您的地区</label>
+        </div>
+        <div class="form-row">
+            <div class="col">
+                <select id="province_id" name="province_id" class="form-control" v-model="provinceID">
+                    <option value="0" selected>请选择...</option>
+                    <option v-for="province in provinceData" :value="province.province_id">{{province.province_name}}</option>
+                </select>
+            </div>
+            <div class="col">
+                <select id="city_id" name="city_id" class="form-control" v-model="cityID">
+                    <option value="0" selected>请选择...</option>
+                    <option v-for="city in cityData" :value="city.city_id">{{city.city_name}}</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <small class="form-text text-muted">注：没有的地区表示该地区暂无此服务</small>
+        </div>
+        <div class="btn-submit">
+            <button type="submit" class="btn btn-primary btn-lg btn-block">确定预约服务</button>
+        </div>
+
+    </form>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="__PLUGINS__/jquery/jquery-3.3.1.min.js"></script>
+<script src='__PLUGINS__/jquery/jquery.form.min.js'></script>
+<script src="__PLUGINS__/popper/popper.min.js"></script>
+<script src="__PLUGINS__/bootstrap/js/bootstrap.min.js"></script>
+<script src="__PLUGINS__/layui/layui.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script>
+    let layer,form;
+    let app=new Vue({
+        el:"#app",
+        data:{
+            formUrl:"{:url('index/order/add')}",
+            phone:"",
+            taskID:0,
+            provinceID:0,
+            cityID:0,
+            provinceData:[],
+            cityData:[]
+        },
+        watch:{
+            taskID:function (newVal,oldVal) {
+                app.provinceID=0;
+                app.cityID=0;
+                if(newVal>0){
+                    app.getProvince();
+                }
+            },
+            provinceID: function (newVal,oldVal) {
+                app.cityID=0;
+                if(newVal>0){
+                    app.getCity();
+                }
+            }
+
+        },
+        methods:{
+            getCity:function () {
+                let loadIndex=layer.load();
+                $.post("{:url('index/order/city')}",{
+                    province_id:app.provinceID
+                },function (data) {
+                    layer.close(loadIndex);
+                    console.log(data);
+                    app.cityData=data.data;
+                },"JSON");
+                
+            },
+            getProvince:function () {
+                let loadIndex=layer.load();
+                $.post("{:url('index/order/province')}",{
+                    task_id:app.taskID
+                },function (data) {
+                    layer.close(loadIndex);
+                    console.log(data);
+                    app.provinceData=data.data;
+                },"JSON");
+            }
+
+        },
+        created:function(){
+
+        },
+        mounted:function () {
+            console.log("vue:mounted");
+            layui.use(["layer"],function () {
+                console.log("layui:use");
+                layer=layui.layer;
+
+            });
+            //提交表单事件
+            $("#add-form").submit(function () {
+                var loadIndex = layer.load();
+                $(this).ajaxSubmit({
+                    success: function (data, status) {
+                        console.log(data);
+                        layer.close(loadIndex);
+                        layer.msg(data.msg);
+                        if (data.code === 0) {
+
+                        }
+                    }
+                });
+                return false;
+            });
+        }
+
+    });
+    var x = document.getElementById("demo");
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+
+    function showPosition(position) {
+        x.innerHTML = "Latitude: " + position.coords.latitude +
+            "<br />Longitude: " + position.coords.longitude;
+    }
+</script>
+</body>
+</html>

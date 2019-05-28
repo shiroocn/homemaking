@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="__PLUGINS__/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__STATIC__/css/index.css">
+
+    <title>订单查询</title>
+</head>
+<body class="order">
+<div class="show" id="app">
+    <ul>
+        <li>订单号：{$order['order_id']}</li>
+        <li>预约服务：{$order['task_name']}</li>
+        <li>客户地区：{$order['province_name']},{$order['city_name']}</li>
+        <li>联系客户：{$order['order_phone']}</li>
+    </ul>
+</div>
+</body>
+</html>
