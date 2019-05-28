@@ -8,8 +8,6 @@
 
 namespace app\index\controller;
 
-
-use think\App;
 use think\Controller;
 
 class Base extends Controller
