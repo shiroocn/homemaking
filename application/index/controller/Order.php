@@ -73,10 +73,14 @@ class Order extends Base
         }
     }
     public function show(){
-        $paramDate=$this->request->param();
+        $paramData=$this->request->param();
         //验证数据有效性
+        $validate=$this->validate($paramData,'app\index\validate\Order.show');
+        if($validate!==true){
+            return json_shiroo(101,$validate);
+        }
 
-        $orderToken=$paramDate['token'];
+        $orderToken=$paramData['token'];
 
         $where=[
             ['order_token','=',$orderToken]

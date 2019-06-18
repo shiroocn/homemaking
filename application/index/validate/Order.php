@@ -17,17 +17,22 @@ class Order extends Validate
         'phone'=>['require','mobile'],
         'task_id'=>['require','number','>:0'],
         'province_id'=>['require','number','>:0'],
-        'city_id'=>['require','number','>:0']
+        'city_id'=>['require','number','>:0'],
+        'token'=>['require','alphaNum','length:40']
     ];
     protected $message=[
         'phone.require'=>'手机号码不能为空',
         'phone.mobile'=>'手机号码格式错误',
         'task_id'=>'您没有选择预约的服务',
         'province_id'=>'您没有选择您的所在地区',
-        'city_id'=>'您没有选择您的所在地区'
+        'city_id'=>'您没有选择您的所在地区',
+        'token.require'=>'订单token不能为空',
+        'token.alphaNum'=>'订单token只能字母和数字组合',
+        'token.length'=>'订单token长度不符合'
     ];
     protected $scene=[
-        'add'=>['phone','task_id','province_id','city_id']
+        'add'=>['phone','task_id','province_id','city_id'],
+        'show'=>['token']
     ];
 
 }
